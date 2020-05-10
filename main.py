@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 def get_data():
     data = []
     with open("input.txt") as iFile:
@@ -58,8 +61,8 @@ def algorithm_ford_falkersona(adjacency_matrix, queue, stock):
     while should_be_continued:
         should_be_continued = False
         neighbours = get_neighbours(adjacency_matrix, queue, marker)
-        size = float('inf')
         for neighbour in neighbours:
+            size = adjacency_matrix[0][neighbour]
             part, weight = algorithm_ford_falkersona_middle_part(adjacency_matrix, stock, size, marker, neighbour,
                                                                  queue)
             if part:
@@ -91,7 +94,31 @@ def algorithm_ford_falkersona_middle_part(adjacency_matrix, stock, size, marker,
     return False, size
 
 
+def show_all_node_stream(adjacency_matrix):
+    for x in range(len(adjacency_matrix)):
+        for y in range(x + 1, len(adjacency_matrix)):
+            stream = adjacency_matrix[y][x]
+            if stream == 0:
+                continue
+            if stream < 0:
+                print("Потік ребра %d->%d = %d" % (y + 1, x + 1, -stream))
+            else:
+                print("Потік ребра %d->%d = %d" % (x + 1, y + 1, stream))
+
+
+def subtract_matrices(matrix_a, matrix_b):
+    matrix_c = deepcopy(matrix_a)
+    for x in range(len(matrix_a)):
+        for y in range(len(matrix_a[x])):
+            matrix_c[x][y] -= matrix_b[x][y]
+    return matrix_c
+
+
 myAdjacencyMatrix = create_adjacency_matrix(get_data())
+copyAdjacencyMatrix = deepcopy(myAdjacencyMatrix)
 myQueue = find_queue(myAdjacencyMatrix)
 myStock = find_stock(myAdjacencyMatrix)
-print(algorithm_ford_falkersona(myAdjacencyMatrix, myQueue, myStock))
+print("Максимальний потік: " + str(algorithm_ford_falkersona(myAdjacencyMatrix, myQueue, myStock)))
+matrixC = subtract_matrices(myAdjacencyMatrix, copyAdjacencyMatrix)
+show_all_node_stream(matrixC)
+print(matrixC)
