@@ -48,7 +48,7 @@ def find_stock(adjacency_matrix):
 def get_neighbours(adjacency_matrix, index, marker):
     neighbours = []
     for x in range(len(adjacency_matrix)):
-        if adjacency_matrix[index][x] > 0 and marker[x] != True:
+        if adjacency_matrix[index][x] > 0 and not marker[x]:
             neighbours.append(x)
     return neighbours
 
